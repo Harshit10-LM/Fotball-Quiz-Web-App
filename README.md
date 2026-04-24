@@ -1,6 +1,6 @@
 # ⚽ Football Quiz App
 
-A professional full-stack football quiz web application inspired by the premium experience of UEFA fantasy-style platforms. Built with **HTML, CSS, JavaScript, and Flask**, this project delivers an engaging quiz experience with leaderboard tracking, admin management, and responsive modern UI.
+A football quiz web application inspired by the premium experience of UEFA fantasy-style platforms. Built with **HTML, CSS, JavaScript, and Flask**, this project delivers an engaging quiz experience with leaderboard tracking, admin management, and responsive modern UI.
 
 ---
 
@@ -27,6 +27,7 @@ A professional full-stack football quiz web application inspired by the premium 
   * FIFA World Cup
   * Premier League
   * Football Legends
+  * La Liga
 * Timer for each question
 * Progress bar
 * Instant answer selection feedback
@@ -79,22 +80,12 @@ A professional full-stack football quiz web application inspired by the premium 
 * Uses Python lists/dictionaries
 * Fast and simple data storage
 * Preloaded football questions
-
-### 🌐 Deployment Ready
-
-* Separate frontend and backend folders
-* Ready for GitHub repositories
-* Easy deployment on:
-
-  * Netlify / Vercel (Frontend)
-  * Render / Railway (Backend)
-
+* 
 ---
 
 # ✨ Premium UI/UX Features
 
 * UEFA-style color theme
-* Glassmorphism cards
 * Animated buttons
 * Smooth page transitions
 * Hover glow effects
@@ -109,29 +100,7 @@ A professional full-stack football quiz web application inspired by the premium 
 * **Frontend:** HTML, CSS, JavaScript
 * **Backend:** Python Flask
 * **API Integration:** Fetch API
-* **Version Control:** GitHub
-* **Deployment:** Netlify / Render
-
----
-
-# 📂 Project Structure
-
-```bash id="7kv5oq"
-football-quiz-app/
-├── frontend/
-│   ├── index.html
-│   ├── quiz.html
-│   ├── leaderboard.html
-│   ├── admin.html
-│   ├── style.css
-│   └── script.js
-│
-└── backend/
-    ├── app.py
-    └── requirements.txt
-```
-
----
+* **Deployment:** Netlify / Vercel
 
 # 🎯 Purpose of Project
 
@@ -143,23 +112,3 @@ This project demonstrates:
 * Full-stack integration
 * Responsive design
 * Deployment workflow
-
----
-
-# 📌 Future Enhancements
-
-* User login system
-* Database integration (MySQL / MongoDB)
-* Difficulty levels
-* Sound effects
-* Multiplayer quiz mode
-* Dark / light mode toggle
-* Analytics dashboard
-
----
-
-# 👨‍💻 Developed For
-
-Academic submission / GitHub portfolio / Full-stack practice project.
-
----
