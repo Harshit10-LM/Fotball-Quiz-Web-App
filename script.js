@@ -488,7 +488,8 @@ function confetti(){
     if(cnt) cnt.textContent = questions.length;
 
     tb.innerHTML = questions.map(q => `
-      <tr>
+      <tr data-qid="${q.id}">
+        <td><input type="checkbox" class="row-cb" value="${q.id}"></td>
         <td>${q.id}</td>
         <td>${q.question.substring(0,55)}${q.question.length>55?'...':''}</td>
         <td><span class="q-badge">${q.category.replace('-',' ')}</span></td>
@@ -498,7 +499,99 @@ function confetti(){
         </td>
       </tr>
     `).join('');
+
+    // Reset selection state after re-render
+    updateBulkUI();
+    const thSelectAll = document.getElementById('thead-select-all');
+    const barSelectAll = document.getElementById('select-all-cb');
+    if(thSelectAll) thSelectAll.checked = false;
+    if(barSelectAll) barSelectAll.checked = false;
   }
+
+  // ── Checkbox / Bulk Selection Logic ──
+  const bulkBar = document.getElementById('bulk-actions');
+  const bulkCountEl = document.getElementById('bulk-count');
+  const selectAllCb = document.getElementById('select-all-cb');
+  const theadSelectAll = document.getElementById('thead-select-all');
+  const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+
+  function getCheckedIds(){
+    return [...document.querySelectorAll('.row-cb:checked')].map(cb => parseInt(cb.value));
+  }
+
+  function updateBulkUI(){
+    const checked = getCheckedIds();
+    const allCbs = document.querySelectorAll('.row-cb');
+    // Show/hide the bulk bar
+    if(bulkBar){
+      if(checked.length > 0) bulkBar.classList.remove('hidden');
+      else bulkBar.classList.add('hidden');
+    }
+    // Update count text
+    if(bulkCountEl) bulkCountEl.textContent = `${checked.length} selected`;
+    // Sync select-all checkboxes
+    const allChecked = allCbs.length > 0 && checked.length === allCbs.length;
+    if(selectAllCb) selectAllCb.checked = allChecked;
+    if(theadSelectAll) theadSelectAll.checked = allChecked;
+    // Highlight selected rows
+    document.querySelectorAll('#questions-tbody tr').forEach(tr => {
+      const cb = tr.querySelector('.row-cb');
+      if(cb && cb.checked) tr.classList.add('row-selected');
+      else tr.classList.remove('row-selected');
+    });
+  }
+
+  // Listen for individual checkbox changes (event delegation)
+  const tbody = document.getElementById('questions-tbody');
+  if(tbody) tbody.addEventListener('change', e => {
+    if(e.target.classList.contains('row-cb')) updateBulkUI();
+  });
+
+  // Select All — from toolbar
+  if(selectAllCb) selectAllCb.addEventListener('change', () => {
+    document.querySelectorAll('.row-cb').forEach(cb => cb.checked = selectAllCb.checked);
+    if(theadSelectAll) theadSelectAll.checked = selectAllCb.checked;
+    updateBulkUI();
+  });
+
+  // Select All — from table header
+  if(theadSelectAll) theadSelectAll.addEventListener('change', () => {
+    document.querySelectorAll('.row-cb').forEach(cb => cb.checked = theadSelectAll.checked);
+    if(selectAllCb) selectAllCb.checked = theadSelectAll.checked;
+    updateBulkUI();
+  });
+
+  // ── Bulk Delete ──
+  if(bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', async () => {
+    const ids = getCheckedIds();
+    if(ids.length === 0) return;
+    if(!confirm(`Delete ${ids.length} question${ids.length > 1 ? 's' : ''}? This cannot be undone.`)) return;
+
+    bulkDeleteBtn.disabled = true;
+    bulkDeleteBtn.textContent = '⏳ Deleting...';
+
+    let deleted = 0, failed = 0;
+    // Fire all delete requests in parallel
+    const results = await Promise.allSettled(
+      ids.map(id =>
+        fetch(`${API_URL}/questions/${id}`, { method: 'DELETE' })
+          .then(r => r.json())
+          .then(d => { if(d.success) deleted++; else failed++; })
+          .catch(() => failed++)
+      )
+    );
+
+    bulkDeleteBtn.disabled = false;
+    bulkDeleteBtn.textContent = '🗑️ Delete Selected';
+
+    if(failed > 0){
+      alert(`Deleted ${deleted} question(s). ${failed} failed.`);
+    } else {
+      console.log(`✅ Bulk deleted ${deleted} questions`);
+    }
+
+    renderTable();
+  });
 
   // ── Edit question — fetch and populate form ──
   window.editQ = async function(id){

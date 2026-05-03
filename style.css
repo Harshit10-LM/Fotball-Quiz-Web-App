@@ -265,6 +265,16 @@ button,input,select,textarea{font-family:var(--font);border:none;outline:none;ba
 .modal-box h2{margin-bottom:.5rem}
 .modal-box p{color:var(--text-sub);margin-bottom:1.5rem}
 
+/* ── Bulk Actions ── */
+.bulk-actions{display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:rgba(255,82,82,.08);border-top:1px solid rgba(255,82,82,.2);border-bottom:1px solid rgba(255,82,82,.2);animation:bulkSlide .3s ease}
+@keyframes bulkSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.bulk-select-all{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:500;color:var(--text-sub);cursor:pointer;user-select:none}
+.bulk-select-all input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.bulk-count{font-size:.82rem;font-weight:600;color:#ff5252;background:rgba(255,82,82,.15);padding:.25rem .7rem;border-radius:50px}
+.bulk-delete-btn{margin-left:auto}
+.lb-table th input[type="checkbox"],.lb-table td input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.lb-table tr.row-selected td{background:rgba(255,82,82,.08)}
+
 /* ── Responsive ── */
 @media(max-width:768px){
   .nav-toggle{display:flex}

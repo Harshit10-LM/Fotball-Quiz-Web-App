@@ -58,8 +58,13 @@
                 </div>
                 <div class="dash-card" style="margin-top:1.5rem;padding:0;overflow:hidden">
                     <div style="padding:1.5rem 1.5rem .5rem"><h2 class="dash-card-title" style="margin-bottom:0">Custom Questions (<span id="q-count">0</span>)</h2></div>
+                    <div class="bulk-actions hidden" id="bulk-actions">
+                        <label class="bulk-select-all"><input type="checkbox" id="select-all-cb"> Select All</label>
+                        <span class="bulk-count" id="bulk-count">0 selected</span>
+                        <button class="btn btn-sm btn-danger bulk-delete-btn" id="bulk-delete-btn">🗑️ Delete Selected</button>
+                    </div>
                     <div class="lb-table-wrap" style="border:0;border-radius:0">
-                        <table class="lb-table"><thead><tr><th>ID</th><th>Question</th><th>Category</th><th>Action</th></tr></thead>
+                        <table class="lb-table"><thead><tr><th style="width:40px"><input type="checkbox" id="thead-select-all"></th><th>ID</th><th>Question</th><th>Category</th><th>Action</th></tr></thead>
                         <tbody id="questions-tbody"></tbody></table>
                     </div>
                 </div>
