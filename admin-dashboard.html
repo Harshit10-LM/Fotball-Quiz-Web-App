@@ -48,9 +48,21 @@
                 <div class="dash-actions">
                     <a href="admin.html" class="dash-action"><span>➕</span><span>Add New Question</span></a>
                     <a href="leaderboard.html" class="dash-action"><span>📊</span><span>View Global Leaderboard</span></a>
-                    <button class="dash-action"><span>🧹</span><span>Clear Cache & Reset</span></button>
-                    <button class="dash-action" style="color:#ff5252;border-color:rgba(255,82,82,.3)"><span>⚠️</span><span>Ban User by ID</span></button>
+                    <a href="#admin-lb-section" class="dash-action"><span>👥</span><span>Manage Leaderboard Users</span></a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Management Section -->
+        <div class="dash-card" id="admin-lb-section" style="margin-top:1.5rem;padding:0;overflow:hidden">
+            <div style="padding:1.5rem 1.5rem .5rem;display:flex;justify-content:space-between;align-items:center">
+                <h2 class="dash-card-title" style="margin-bottom:0">🏆 Manage Leaderboard (<span id="admin-lb-count">0</span>)</h2>
+            </div>
+            <div class="lb-table-wrap" style="border:0;border-radius:0">
+                <table class="lb-table">
+                    <thead><tr><th>ID</th><th>Player</th><th>Score</th><th>Category</th><th>Date</th><th>Action</th></tr></thead>
+                    <tbody id="admin-lb-tbody"></tbody>
+                </table>
             </div>
         </div>
     </main>

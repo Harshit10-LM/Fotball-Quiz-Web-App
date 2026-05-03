@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Questions — UEFA Football Quiz Arena</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -20,7 +19,7 @@
     <main class="admin-main container">
         <div class="admin-grid">
             <div class="dash-card">
-                <h2 class="dash-card-title">Add New Question</h2>
+                <h2 class="dash-card-title" id="admin-form-title">Add New Question</h2>
                 <form id="add-question-form" onsubmit="event.preventDefault();">
                     <div class="form-group"><label>Question <span class="required">*</span></label><textarea id="aq-question" rows="3" placeholder="Enter question..." required></textarea></div>
                     <div class="form-row-2col">
@@ -38,6 +37,7 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-primary btn-full mt-2" id="add-question-btn">Save Question</button>
+                    <button type="button" class="btn btn-outline btn-full mt-1 hidden" id="cancel-edit-btn" style="color:#ff5252;border-color:#ff5252">✕ Cancel Edit</button>
                 </form>
             </div>
 
@@ -71,7 +71,7 @@
         <div class="modal-box">
             <div class="icon text-glow">✅</div>
             <h2>Question Saved!</h2>
-            <p>The question has been added to the database.</p>
+            <p id="modal-msg">The question has been added to the database.</p>
             <button class="btn btn-primary" id="modal-close-btn">Continue</button>
         </div>
     </div>

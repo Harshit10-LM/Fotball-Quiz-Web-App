@@ -211,11 +211,31 @@ const Quiz=(function(){
     document.getElementById('quiz-result').classList.add('hidden');
   }
 
-  function saveLB(n,s,t){
-    const e=JSON.parse(localStorage.getItem('quizLeaderboard')||'[]');
-    e.push({name:n,score:s*100,total:t,category:document.getElementById('quiz-category')?.value||'all',date:new Date().toLocaleDateString('en-GB')});
-    e.sort((a,b)=>b.score-a.score);
-    localStorage.setItem('quizLeaderboard',JSON.stringify(e.slice(0,50)));
+  async function saveLB(n,s,t){
+    const entry = {
+      name: n,
+      score: s * 100,
+      total: t,
+      category: document.getElementById('quiz-category')?.value || 'all',
+      date: new Date().toLocaleDateString('en-GB')
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/leaderboard`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry)
+      });
+      const data = await res.json();
+      if(data.success) console.log('✅ Score saved to Supabase:', data.entry);
+    } catch(err) {
+      // Fallback to localStorage if backend is down
+      console.warn('⚠️ Backend unavailable, saving score to localStorage:', err.message);
+      const e = JSON.parse(localStorage.getItem('quizLeaderboard') || '[]');
+      e.push(entry);
+      e.sort((a, b) => b.score - a.score);
+      localStorage.setItem('quizLeaderboard', JSON.stringify(e.slice(0, 50)));
+    }
   }
 
   return{init};
@@ -238,25 +258,42 @@ function confetti(){
 }
 
 // ── Leaderboard ──
-(function(){
+(async function(){
   const tb=document.getElementById('lb-tbody');if(!tb)return;
-  const defaults=[
-    {name:'Ronaldo Fan',score:950,category:'champions-league',date:'25/04/2026'},
-    {name:'Messi GOAT',score:900,category:'world-cup',date:'24/04/2026'},
-    {name:'Zidane Magic',score:880,category:'legends',date:'23/04/2026'},
-    {name:'Haaland Beast',score:850,category:'champions-league',date:'22/04/2026'},
-    {name:'Mbappe Speed',score:820,category:'world-cup',date:'21/04/2026'},
-    {name:'Modric Maestro',score:800,category:'euro',date:'20/04/2026'},
-    {name:'Pirlo Legend',score:780,category:'legends',date:'19/04/2026'},
-    {name:'Salah King',score:750,category:'records',date:'18/04/2026'},
-    {name:'Neymar Skills',score:720,category:'champions-league',date:'17/04/2026'},
-    {name:'Buffon Wall',score:700,category:'legends',date:'16/04/2026'},
-    {name:'De Bruyne Ace',score:680,category:'euro',date:'15/04/2026'},
-    {name:'Benzema CF9',score:650,category:'champions-league',date:'14/04/2026'}
-  ];
-  const stored=JSON.parse(localStorage.getItem('quizLeaderboard')||'[]');
-  let all=[...stored,...defaults].sort((a,b)=>b.score-a.score);
-  const seen=new Set();all=all.filter(e=>{if(seen.has(e.name))return false;seen.add(e.name);return true});
+
+  let all = [];
+
+  try {
+    const res = await fetch(`${API_URL}/leaderboard`);
+    const data = await res.json();
+    if(data.success && data.leaderboard.length > 0){
+      all = data.leaderboard;
+      console.log(`✅ Loaded ${all.length} leaderboard entries from API`);
+    }
+  } catch(err) {
+    console.warn('⚠️ Backend unavailable, loading from localStorage:', err.message);
+  }
+
+  // Fallback: use localStorage + defaults if API returned nothing
+  if(all.length === 0){
+    const defaults=[
+      {name:'Ronaldo Fan',score:950,category:'champions-league',date:'25/04/2026'},
+      {name:'Messi GOAT',score:900,category:'world-cup',date:'24/04/2026'},
+      {name:'Zidane Magic',score:880,category:'legends',date:'23/04/2026'},
+      {name:'Haaland Beast',score:850,category:'champions-league',date:'22/04/2026'},
+      {name:'Mbappé Speed',score:820,category:'world-cup',date:'21/04/2026'},
+      {name:'Modric Maestro',score:800,category:'euro',date:'20/04/2026'},
+      {name:'Pirlo Legend',score:780,category:'legends',date:'19/04/2026'},
+      {name:'Salah King',score:750,category:'records',date:'18/04/2026'},
+      {name:'Neymar Skills',score:720,category:'champions-league',date:'17/04/2026'},
+      {name:'Buffon Wall',score:700,category:'legends',date:'16/04/2026'},
+      {name:'De Bruyne Ace',score:680,category:'euro',date:'15/04/2026'},
+      {name:'Benzema CF9',score:650,category:'champions-league',date:'14/04/2026'}
+    ];
+    const stored=JSON.parse(localStorage.getItem('quizLeaderboard')||'[]');
+    all=[...stored,...defaults].sort((a,b)=>b.score-a.score);
+    const seen=new Set();all=all.filter(e=>{if(seen.has(e.name))return false;seen.add(e.name);return true});
+  }
 
   function render(data){
     for(let i=0;i<3;i++){const card=document.getElementById('top3-'+(i+1));if(card&&data[i]){card.querySelector('.top3-name').textContent=data[i].name;card.querySelector('.top3-pts').textContent=data[i].score+' pts'}}
@@ -285,6 +322,12 @@ function confetti(){
   const form=document.getElementById('add-question-form');if(!form)return;
   const modal=document.getElementById('success-modal'),mc=document.getElementById('modal-close-btn');
   const pc=document.getElementById('preview-content'),pe=document.getElementById('preview-empty');
+  const formTitle=document.getElementById('admin-form-title');
+  const submitBtn=document.getElementById('add-question-btn');
+  const cancelBtn=document.getElementById('cancel-edit-btn');
+
+  // Track edit mode
+  let editingId = null;
 
   // Live preview (no API call needed, just updates DOM)
   ['aq-question','aq-opt-a','aq-opt-b','aq-opt-c','aq-opt-d','aq-category','aq-correct'].forEach(id=>{
@@ -303,9 +346,39 @@ function confetti(){
     }
   }
 
-  // ── Add question via POST API ──
-  const ab=document.getElementById('add-question-btn');
-  if(ab) ab.addEventListener('click', async ()=>{
+  // ── Switch to edit mode ──
+  function enterEditMode(q) {
+    editingId = q.id;
+    document.getElementById('aq-question').value = q.question;
+    document.getElementById('aq-opt-a').value = q.options[0];
+    document.getElementById('aq-opt-b').value = q.options[1];
+    document.getElementById('aq-opt-c').value = q.options[2];
+    document.getElementById('aq-opt-d').value = q.options[3];
+    document.getElementById('aq-correct').value = q.correct;
+    document.getElementById('aq-category').value = q.category;
+    if(formTitle) formTitle.textContent = `Edit Question #${q.id}`;
+    if(submitBtn) submitBtn.textContent = '✏️ Update Question';
+    if(cancelBtn) cancelBtn.classList.remove('hidden');
+    preview();
+    // Scroll to form
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Cancel edit mode ──
+  function cancelEdit() {
+    editingId = null;
+    form.reset();
+    if(formTitle) formTitle.textContent = 'Add New Question';
+    if(submitBtn) submitBtn.textContent = 'Save Question';
+    if(cancelBtn) cancelBtn.classList.add('hidden');
+    if(pc) pc.classList.add('hidden');
+    if(pe) pe.style.display='flex';
+  }
+
+  if(cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
+
+  // ── Save / Update question ──
+  if(submitBtn) submitBtn.addEventListener('click', async ()=>{
     const q=document.getElementById('aq-question').value.trim();
     const a=document.getElementById('aq-opt-a').value.trim();
     const b=document.getElementById('aq-opt-b').value.trim();
@@ -329,24 +402,42 @@ function confetti(){
     };
 
     try {
-      // POST to backend API
-      const res = await fetch(`${API_URL}/questions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      let res, data;
 
-      const data = await res.json();
-
-      if(res.ok && data.success){
-        // Show success modal
-        if(modal) modal.classList.remove('hidden');
-        console.log('✅ Question saved to backend:', data.question);
+      if(editingId) {
+        // PUT to update existing question
+        res = await fetch(`${API_URL}/questions/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        data = await res.json();
+        if(res.ok && data.success){
+          document.getElementById('modal-msg').textContent = `Question #${editingId} updated successfully.`;
+          if(modal) modal.classList.remove('hidden');
+          console.log('✅ Question updated:', data.question);
+        } else {
+          const errors = data.details ? data.details.join('\n') : data.error;
+          alert('Update failed:\n' + errors);
+          return;
+        }
       } else {
-        // Show backend validation errors
-        const errors = data.details ? data.details.join('\n') : data.error;
-        alert('Backend validation failed:\n' + errors);
-        return;
+        // POST to create new question
+        res = await fetch(`${API_URL}/questions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        data = await res.json();
+        if(res.ok && data.success){
+          document.getElementById('modal-msg').textContent = 'The question has been added to the database.';
+          if(modal) modal.classList.remove('hidden');
+          console.log('✅ Question saved to backend:', data.question);
+        } else {
+          const errors = data.details ? data.details.join('\n') : data.error;
+          alert('Backend validation failed:\n' + errors);
+          return;
+        }
       }
     } catch(err) {
       // Backend down — save to localStorage as fallback
@@ -358,9 +449,7 @@ function confetti(){
     }
 
     // Reset form and refresh table
-    form.reset();
-    if(pc) pc.classList.add('hidden');
-    if(pe) pe.style.display='flex';
+    cancelEdit();
     renderTable();
   });
 
@@ -403,10 +492,28 @@ function confetti(){
         <td>${q.id}</td>
         <td>${q.question.substring(0,55)}${q.question.length>55?'...':''}</td>
         <td><span class="q-badge">${q.category.replace('-',' ')}</span></td>
-        <td><button class="btn btn-sm btn-outline" onclick="delQ(${q.id})">Delete</button></td>
+        <td style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="editQ(${q.id})">✏️ Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="delQ(${q.id})">🗑️ Delete</button>
+        </td>
       </tr>
     `).join('');
   }
+
+  // ── Edit question — fetch and populate form ──
+  window.editQ = async function(id){
+    try {
+      const res = await fetch(`${API_URL}/questions/${id}`);
+      const data = await res.json();
+      if(data.success){
+        enterEditMode(data.question);
+      } else {
+        alert(data.error || 'Failed to load question.');
+      }
+    } catch(err) {
+      alert('Could not reach backend to load question.');
+    }
+  };
 
   // ── Delete question via DELETE API ──
   window.delQ = async function(id){
@@ -433,6 +540,55 @@ function confetti(){
 
   // Initial load
   renderTable();
+})();
+
+// ──────────────────────────────────────────────
+// Admin Dashboard — Leaderboard Management
+// ──────────────────────────────────────────────
+(async function(){
+  const tb=document.getElementById('admin-lb-tbody');if(!tb)return;
+
+  async function renderAdminLB(){
+    let entries = [];
+    try {
+      const res = await fetch(`${API_URL}/leaderboard`);
+      const data = await res.json();
+      if(data.success) entries = data.leaderboard;
+    } catch(err) {
+      console.warn('⚠️ Could not load leaderboard:', err.message);
+    }
+
+    const cnt=document.getElementById('admin-lb-count');
+    if(cnt) cnt.textContent = entries.length;
+
+    tb.innerHTML = entries.length === 0
+      ? '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem">No leaderboard entries yet. Play a quiz to add scores!</td></tr>'
+      : entries.map(e => `
+        <tr>
+          <td>${e.id}</td>
+          <td>${e.name}</td>
+          <td style="color:var(--accent);font-weight:700">${e.score}</td>
+          <td>${(e.category||'all').replace('-',' ')}</td>
+          <td style="color:var(--text-muted)">${e.date}</td>
+          <td><button class="btn btn-sm btn-danger" onclick="delLB(${e.id})">🗑️ Delete</button></td>
+        </tr>
+      `).join('');
+  }
+
+  window.delLB = async function(id){
+    if(!confirm('Delete this leaderboard entry?')) return;
+    try {
+      const res = await fetch(`${API_URL}/leaderboard/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if(data.success) console.log(`✅ Deleted leaderboard entry ${id}`);
+      else alert(data.error || 'Failed to delete.');
+    } catch(err) {
+      alert('Could not reach backend.');
+    }
+    renderAdminLB();
+  };
+
+  renderAdminLB();
 })();
 
 // ── Did You Know? — Rotating Football Facts ──
