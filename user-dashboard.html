@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan Dashboard — UEFA Football Quiz Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><div class="nav-inner">
+        <a href="index.html" class="nav-brand"><div class="logo-icon">⚽</div><span>Football Quiz Arena</span></a>
+        <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li><li><a href="quiz.html">Quiz</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li><li><a href="login.html" class="nav-btn">Logout</a></li>
+        </ul>
+    </div></nav>
+
+    <main class="dash-main container">
+        <div class="welcome-card">
+            <div class="welcome-info">
+                <div class="welcome-avatar">🧑‍💻</div>
+                <div><h1>Welcome, <span id="dash-username" class="text-glow">Player</span>!</h1><p>Ready for your next Champions League challenge?</p></div>
+            </div>
+            <a href="quiz.html" class="btn btn-primary">Play Now ▶</a>
+        </div>
+
+        <div class="dash-stats">
+            <div class="dash-stat"><div class="icon">🏆</div><div class="num" data-target="850">0</div><div class="lbl">Total Points</div></div>
+            <div class="dash-stat"><div class="icon">🎯</div><div class="num" data-target="72">0</div><div class="lbl">Win Rate %</div></div>
+            <div class="dash-stat"><div class="icon">🌍</div><div class="num" data-target="15">0</div><div class="lbl">Global Rank</div></div>
+            <div class="dash-stat"><div class="icon">🎮</div><div class="num" data-target="24">0</div><div class="lbl">Quizzes Played</div></div>
+        </div>
+
+        <div class="dash-grid">
+            <div class="dash-card">
+                <h2 class="dash-card-title">Fan Profile</h2>
+                <div class="profile-grid">
+                    <div class="profile-avatar">🧑‍💻</div>
+                    <div>
+                        <div class="profile-row"><span class="profile-label">Username:</span><strong id="profile-name">Player</strong></div>
+                        <div class="profile-row"><span class="profile-label">Favorite Club:</span><strong>Real Madrid</strong></div>
+                        <div class="profile-row"><span class="profile-label">Member Since:</span><strong>Oct 2025</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-card">
+                <h2 class="dash-card-title">Recent Matches</h2>
+                <div class="activity-list">
+                    <div class="activity-item"><div class="activity-dot win"></div><div class="activity-info"><strong>Champions League History</strong><span>Score: 18/20 • 2 days ago</span></div></div>
+                    <div class="activity-item"><div class="activity-dot loss"></div><div class="activity-info"><strong>World Cup Classics</strong><span>Score: 8/20 • 5 days ago</span></div></div>
+                    <div class="activity-item"><div class="activity-dot win"></div><div class="activity-info"><strong>Football Legends</strong><span>Score: 15/20 • 1 week ago</span></div></div>
+                </div>
+                <a href="leaderboard.html" class="btn btn-outline btn-full mt-2">View Global Leaderboard</a>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
