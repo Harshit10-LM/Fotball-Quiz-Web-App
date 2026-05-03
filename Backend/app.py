@@ -99,6 +99,10 @@ def home():
     count_resp = supabase.table('questions').select('id', count='exact').execute()
     total = count_resp.count if count_resp.count is not None else len(count_resp.data)
 
+    # Get leaderboard count too
+    lb_resp = supabase.table('leaderboard').select('id', count='exact').execute()
+    lb_total = lb_resp.count if lb_resp.count is not None else len(lb_resp.data)
+
     return jsonify({
         'message': 'UEFA Football Quiz Arena — Backend API',
         'version': '2.0 (Supabase)',
@@ -108,9 +112,13 @@ def home():
             'POST /api/questions': 'Add a new question (JSON body)',
             'PUT /api/questions/<id>': 'Update a question by ID',
             'DELETE /api/questions/<id>': 'Delete a question by ID',
-            'GET /api/questions/search?q=': 'Search questions by keyword'
+            'GET /api/questions/search?q=': 'Search questions by keyword',
+            'GET /api/leaderboard': 'Get all leaderboard entries',
+            'POST /api/leaderboard': 'Save a new score',
+            'DELETE /api/leaderboard/<id>': 'Delete a leaderboard entry'
         },
-        'total_questions': total
+        'total_questions': total,
+        'total_leaderboard_entries': lb_total
     })
 
 
@@ -265,6 +273,92 @@ def delete_question(question_id):
 
 
 # ──────────────────────────────────────────────
+# Leaderboard Routes
+# ──────────────────────────────────────────────
+
+# ── GET all leaderboard entries ──
+@app.route('/api/leaderboard', methods=['GET'])
+def get_leaderboard():
+    """Returns all leaderboard entries sorted by score descending."""
+    response = supabase.table('leaderboard') \
+        .select('*') \
+        .order('score', desc=True) \
+        .execute()
+
+    return jsonify({
+        'success': True,
+        'count': len(response.data),
+        'leaderboard': response.data
+    })
+
+
+# ── POST save a new score ──
+@app.route('/api/leaderboard', methods=['POST'])
+def create_leaderboard_entry():
+    """
+    Saves a new leaderboard entry. Expects JSON body:
+    {
+        "name": "Player Name",
+        "score": 800,
+        "total": 10,
+        "category": "champions-league",
+        "date": "03/05/2026"
+    }
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Request body must be valid JSON.'}), 400
+
+    errors = []
+    name = data.get('name', '')
+    if not name or not isinstance(name, str) or len(name.strip()) < 1:
+        errors.append('Field "name" is required.')
+
+    score = data.get('score')
+    if score is None or not isinstance(score, (int, float)):
+        errors.append('Field "score" is required and must be a number.')
+
+    total = data.get('total')
+    if total is None or not isinstance(total, int):
+        errors.append('Field "total" is required and must be an integer.')
+
+    if errors:
+        return jsonify({'error': 'Validation failed', 'details': errors}), 400
+
+    new_entry = {
+        'name': name.strip(),
+        'score': int(score),
+        'total': total,
+        'category': data.get('category', 'all'),
+        'date': data.get('date', '')
+    }
+
+    response = supabase.table('leaderboard').insert(new_entry).execute()
+
+    return jsonify({
+        'success': True,
+        'message': 'Score saved successfully.',
+        'entry': response.data[0]
+    }), 201
+
+
+# ── DELETE a leaderboard entry ──
+@app.route('/api/leaderboard/<int:entry_id>', methods=['DELETE'])
+def delete_leaderboard_entry(entry_id):
+    """Deletes a leaderboard entry by ID (admin use)."""
+    existing = supabase.table('leaderboard').select('id').eq('id', entry_id).execute()
+    if not existing.data:
+        return jsonify({'error': f'Leaderboard entry {entry_id} not found.'}), 404
+
+    supabase.table('leaderboard').delete().eq('id', entry_id).execute()
+
+    return jsonify({
+        'success': True,
+        'message': f'Leaderboard entry {entry_id} deleted successfully.'
+    })
+
+
+# ──────────────────────────────────────────────
 # Run the server
 # ──────────────────────────────────────────────
 
@@ -273,14 +367,18 @@ if __name__ == '__main__':
     try:
         check = supabase.table('questions').select('id', count='exact').execute()
         total = check.count if check.count is not None else len(check.data)
+        lb_check = supabase.table('leaderboard').select('id', count='exact').execute()
+        lb_total = lb_check.count if lb_check.count is not None else len(lb_check.data)
     except Exception as e:
         print(f'⚠️  Could not reach Supabase: {e}')
         total = '?'
+        lb_total = '?'
 
     print('=' * 50)
     print('  UEFA Football Quiz Arena — Backend API')
     print(f'  Connected to Supabase ✅')
     print(f'  Questions in database: {total}')
+    print(f'  Leaderboard entries:   {lb_total}')
     print('  Server running on http://localhost:5001')
     print('=' * 50)
     app.run(debug=True, port=5001)
