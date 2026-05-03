@@ -1,5 +1,4 @@
 /* ========== UEFA FOOTBALL QUIZ ARENA — COMPLETE JAVASCRIPT ========== */
-/* Full-stack version: calls Flask backend API at localhost:5001       */
 
 // API Base URL — Render backend
 const API_URL = 'https://fotball-quiz-web-app.onrender.com/api';
