@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard — UEFA Football Quiz Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><div class="nav-inner">
+        <a href="index.html" class="nav-brand"><div class="logo-icon">⚽</div><span>Football Quiz Arena</span></a>
+        <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li><li><a href="quiz.html">Quiz</a></li>
+            <li><a href="leaderboard.html" class="active">Leaderboard</a></li><li><a href="login.html" class="nav-btn">Login</a></li>
+        </ul>
+    </div></nav>
+
+    <main class="lb-main container">
+        <h1 class="page-title">Global <span class="text-glow">Rankings</span></h1>
+        <p class="page-sub">See where you stand among the best football minds.</p>
+
+        <div class="top3">
+            <div class="top3-card silver" id="top3-2"><div class="top3-crown">🥈</div><div class="top3-rank">#2</div><div class="top3-name">—</div><div class="top3-pts">— pts</div></div>
+            <div class="top3-card gold" id="top3-1"><div class="top3-crown">👑</div><div class="top3-rank">#1</div><div class="top3-name">—</div><div class="top3-pts">— pts</div></div>
+            <div class="top3-card bronze" id="top3-3"><div class="top3-crown">🥉</div><div class="top3-rank">#3</div><div class="top3-name">—</div><div class="top3-pts">— pts</div></div>
+        </div>
+
+        <div class="lb-controls">
+            <div class="lb-search"><span>🔍</span><input type="text" id="lb-search-input" placeholder="Search player..."></div>
+            <select class="lb-sort" id="lb-sort">
+                <option value="score-desc">Highest Score</option><option value="score-asc">Lowest Score</option>
+                <option value="name-asc">Name A-Z</option><option value="name-desc">Name Z-A</option>
+            </select>
+        </div>
+
+        <div class="lb-table-wrap">
+            <table class="lb-table">
+                <thead><tr><th>Rank</th><th>Player</th><th>Score</th><th>Category</th><th>Date</th></tr></thead>
+                <tbody id="lb-tbody"></tbody>
+            </table>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

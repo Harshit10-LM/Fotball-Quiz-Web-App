@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg-primary: #04081a;
+  --bg-secondary: #0b1128;
+  --bg-card: #101840;
+  --bg-card-alt: #0d1335;
+  --accent: #00e5ff;
+  --accent-blue: #1565c0;
+  --accent-purple: #7b1fa2;
+  --gradient-hero: linear-gradient(135deg,#0d47a1,#1a237e,#4a148c);
+  --gradient-btn: linear-gradient(135deg,#00e5ff,#2979ff);
+  --gradient-card: linear-gradient(160deg,#101840,#0b1128);
+  --gradient-gold: linear-gradient(135deg,#ffd700,#ffab00);
+  --glow: 0 0 20px rgba(0,229,255,.35);
+  --text: #fff;
+  --text-sub: rgba(255,255,255,.65);
+  --text-muted: rgba(255,255,255,.38);
+  --border: rgba(0,229,255,.12);
+  --radius: 12px;
+  --font: 'Inter',system-ui,sans-serif;
+  --ease: .3s cubic-bezier(.4,0,.2,1);
+}

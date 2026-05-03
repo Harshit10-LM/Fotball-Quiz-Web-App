@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Quiz — UEFA Football Quiz Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><div class="nav-inner">
+        <a href="index.html" class="nav-brand"><div class="logo-icon">⚽</div><span>Football Quiz Arena</span></a>
+        <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li><li><a href="quiz.html" class="active">Quiz</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li><li><a href="login.html" class="nav-btn">Login</a></li>
+        </ul>
+    </div></nav>
+
+    <main class="quiz-main container">
+        <section id="quiz-setup" class="quiz-setup">
+            <div class="setup-card">
+                <div class="icon">🏆</div>
+                <h1>Start Match</h1>
+                <p>Choose your category and enter the arena.</p>
+                <div class="form-group"><label for="player-name">Player Name</label><input type="text" id="player-name" placeholder="e.g. FootballFan99"></div>
+                <div class="form-group"><label for="quiz-category">Category</label>
+                    <select id="quiz-category">
+                        <option value="all">Mixed (All Categories)</option>
+                        <option value="champions-league">UEFA Champions League</option>
+                        <option value="world-cup">FIFA World Cup</option>
+                        <option value="euro">UEFA Euro</option>
+                        <option value="la-liga">La Liga</option>
+                        <option value="premier-league">Premier League</option>
+                        <option value="legends">Football Legends</option>
+                        <option value="records">Records & Stats</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-full mt-2" id="start-quiz-btn">Enter Arena ▶</button>
+            </div>
+        </section>
+
+        <section id="quiz-play" class="hidden" style="max-width:700px;margin:0 auto">
+            <div class="quiz-header">
+                <div class="quiz-prog-info">
+                    <span>Question <span id="q-current">1</span> / <span id="q-total">10</span></span>
+                    <span class="quiz-score-lbl">Score: <span id="q-score">0</span></span>
+                </div>
+                <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+            </div>
+
+            <div class="quiz-timer">
+                <svg viewBox="0 0 44 44" class="timer-svg">
+                    <circle cx="22" cy="22" r="20" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="4"/>
+                    <circle cx="22" cy="22" r="20" fill="none" stroke="#00e5ff" stroke-width="4" stroke-dasharray="125.66" stroke-dashoffset="0" id="timer-circle"/>
+                </svg>
+                <div class="timer-text" id="timer-text">30</div>
+            </div>
+
+            <div class="q-card">
+                <span class="q-badge" id="q-badge">CATEGORY</span>
+                <h2 class="q-text" id="q-text">Loading question...</h2>
+            </div>
+
+            <div class="q-options">
+                <button class="q-opt"><div class="opt-letter">A</div><span class="opt-text">Option 1</span></button>
+                <button class="q-opt"><div class="opt-letter">B</div><span class="opt-text">Option 2</span></button>
+                <button class="q-opt"><div class="opt-letter">C</div><span class="opt-text">Option 3</span></button>
+                <button class="q-opt"><div class="opt-letter">D</div><span class="opt-text">Option 4</span></button>
+            </div>
+
+            <div class="text-center"><button class="btn btn-primary hidden" id="next-btn">Next Question →</button></div>
+        </section>
+
+        <section id="quiz-result" class="quiz-result hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="result-card">
+                <img src="assets/images/trophy.png" alt="Trophy" class="result-trophy">
+                <h1 id="result-title">Match Completed!</h1>
+                <p class="sub" id="result-sub">Here's how you performed</p>
+                <div class="score-ring"><span class="big" id="result-score">0</span><span class="of">/ <span id="result-total">10</span></span></div>
+                <div class="result-stats">
+                    <div class="r-stat"><span class="val" id="result-correct" style="color:#4caf50">0</span><span class="lbl">Correct</span></div>
+                    <div class="r-stat"><span class="val" id="result-wrong" style="color:#ff5252">0</span><span class="lbl">Wrong</span></div>
+                    <div class="r-stat"><span class="val" id="result-time">0s</span><span class="lbl">Avg Time</span></div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-primary" id="play-again-btn">Play Again</button>
+                    <a href="leaderboard.html" class="btn btn-outline">Leaderboard</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
