@@ -374,6 +374,8 @@ if __name__ == '__main__':
         total = '?'
         lb_total = '?'
 
+    port = int(os.environ.get("PORT", 5000))
+
     print('=' * 50)
     print('  UEFA Football Quiz Arena — Backend API')
     print(f'  Connected to Supabase ✅')
@@ -381,5 +383,4 @@ if __name__ == '__main__':
     print(f'  Leaderboard entries:   {lb_total}')
     print(f'  Server running on port {port}')
     print('=' * 50)
-    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
