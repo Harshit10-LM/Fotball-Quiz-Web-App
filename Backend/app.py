@@ -379,7 +379,7 @@ if __name__ == '__main__':
     print(f'  Connected to Supabase ✅')
     print(f'  Questions in database: {total}')
     print(f'  Leaderboard entries:   {lb_total}')
-    print('  Server running on http://localhost:5001')
+    print(f'  Server running on port {port}')
     print('=' * 50)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
