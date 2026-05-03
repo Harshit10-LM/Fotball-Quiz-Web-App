@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Questions — UEFA Football Quiz Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><div class="nav-inner">
+        <a href="index.html" class="nav-brand"><div class="logo-icon">⚽</div><span>Quiz Arena <span style="color:#ff5252;font-size:.75rem;vertical-align:top;margin-left:4px">ADMIN</span></span></a>
+        <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="admin-dashboard.html">Overview</a></li>
+            <li><a href="admin.html" class="active">Manage Questions</a></li>
+            <li><a href="login.html" class="nav-btn" style="background:linear-gradient(135deg,#ff5252,#d32f2f)!important">Logout</a></li>
+        </ul>
+    </div></nav>
+
+    <main class="admin-main container">
+        <div class="admin-grid">
+            <div class="dash-card">
+                <h2 class="dash-card-title">Add New Question</h2>
+                <form id="add-question-form" onsubmit="event.preventDefault();">
+                    <div class="form-group"><label>Question <span class="required">*</span></label><textarea id="aq-question" rows="3" placeholder="Enter question..." required></textarea></div>
+                    <div class="form-row-2col">
+                        <div class="form-group"><label>Option A <span class="required">*</span></label><input type="text" id="aq-opt-a"></div>
+                        <div class="form-group"><label>Option B <span class="required">*</span></label><input type="text" id="aq-opt-b"></div>
+                        <div class="form-group"><label>Option C <span class="required">*</span></label><input type="text" id="aq-opt-c"></div>
+                        <div class="form-group"><label>Option D <span class="required">*</span></label><input type="text" id="aq-opt-d"></div>
+                    </div>
+                    <div class="form-row-2col">
+                        <div class="form-group"><label>Correct Answer <span class="required">*</span></label>
+                            <select id="aq-correct"><option value="" disabled selected>Select...</option><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+                        </div>
+                        <div class="form-group"><label>Category <span class="required">*</span></label>
+                            <select id="aq-category"><option value="champions-league">Champions League</option><option value="world-cup">World Cup</option><option value="euro">Euro</option><option value="la-liga">La Liga</option><option value="premier-league">Premier League</option><option value="legends">Legends</option><option value="records">Records</option></select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-full mt-2" id="add-question-btn">Save Question</button>
+                </form>
+            </div>
+
+            <div>
+                <div class="dash-card">
+                    <h2 class="dash-card-title" style="color:var(--text-sub);font-size:.85rem;text-transform:uppercase">Live Preview</h2>
+                    <div class="preview-empty" id="preview-empty">Start typing to see preview...</div>
+                    <div id="preview-content" class="hidden">
+                        <span class="q-badge" id="preview-cat">CATEGORY</span>
+                        <h3 class="preview-q" id="preview-q">Question?</h3>
+                        <div class="preview-opts">
+                            <div class="preview-opt" id="prev-a">A. <span id="prev-a-t">—</span></div>
+                            <div class="preview-opt" id="prev-b">B. <span id="prev-b-t">—</span></div>
+                            <div class="preview-opt" id="prev-c">C. <span id="prev-c-t">—</span></div>
+                            <div class="preview-opt" id="prev-d">D. <span id="prev-d-t">—</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-card" style="margin-top:1.5rem;padding:0;overflow:hidden">
+                    <div style="padding:1.5rem 1.5rem .5rem"><h2 class="dash-card-title" style="margin-bottom:0">Custom Questions (<span id="q-count">0</span>)</h2></div>
+                    <div class="lb-table-wrap" style="border:0;border-radius:0">
+                        <table class="lb-table"><thead><tr><th>ID</th><th>Question</th><th>Category</th><th>Action</th></tr></thead>
+                        <tbody id="questions-tbody"></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay hidden" id="success-modal">
+        <div class="modal-box">
+            <div class="icon text-glow">✅</div>
+            <h2>Question Saved!</h2>
+            <p>The question has been added to the database.</p>
+            <button class="btn btn-primary" id="modal-close-btn">Continue</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

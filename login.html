@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — UEFA Football Quiz Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"><div class="nav-inner">
+        <a href="index.html" class="nav-brand"><div class="logo-icon">⚽</div><span>Football Quiz Arena</span></a>
+        <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li><li><a href="quiz.html">Quiz</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li><li><a href="login.html" class="nav-btn active">Login</a></li>
+        </ul>
+    </div></nav>
+
+    <section class="login-page">
+        <div class="login-bg"><img src="assets/images/login-bg.png" alt=""><div class="login-overlay"></div></div>
+        <div class="login-wrap">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="icon">🔒</div>
+                    <h2>Welcome to the Arena</h2>
+                    <p>Enter your credentials to continue</p>
+                </div>
+                <div class="login-tabs">
+                    <div class="login-tab active" id="user-tab">Fan Login</div>
+                    <div class="login-tab" id="admin-tab">Admin Login</div>
+                </div>
+
+                <form id="user-login-form" class="login-form active" onsubmit="event.preventDefault();">
+                    <div class="form-group"><label for="user-email">Email or Username</label><input type="text" id="user-email" placeholder="e.g. cr7fan@example.com"></div>
+                    <div class="form-group"><label for="user-pass">Password</label><input type="password" id="user-pass" placeholder="••••••••"></div>
+                    <div class="form-row">
+                        <label class="checkbox-label"><input type="checkbox"> Remember me</label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-full" id="user-login-btn">Login as Fan</button>
+                    <div class="login-divider">OR</div>
+                    <button type="button" class="btn btn-outline btn-full" id="register-btn">Create Account</button>
+                </form>
+
+                <form id="admin-login-form" class="login-form" onsubmit="event.preventDefault();">
+                    <div class="form-group"><label for="admin-email">Admin ID</label><input type="text" id="admin-email" placeholder="e.g. ADMIN-001"></div>
+                    <div class="form-group"><label for="admin-pass">Secure Password</label><input type="password" id="admin-pass" placeholder="••••••••"></div>
+                    <button type="button" class="btn btn-primary btn-full" id="admin-login-btn">Access Admin Panel</button>
+                    <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:1rem"><span class="required">*</span> Unauthorized access prohibited</p>
+                </form>
+            </div>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
