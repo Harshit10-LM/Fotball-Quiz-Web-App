@@ -29,7 +29,7 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app)  # Allow frontend to call API from any origin
 
 # Allowed categories for validation
@@ -268,7 +268,7 @@ def delete_question(question_id):
 # Run the server
 # ──────────────────────────────────────────────
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     # Quick connectivity check
     try:
         check = supabase.table('questions').select('id', count='exact').execute()
